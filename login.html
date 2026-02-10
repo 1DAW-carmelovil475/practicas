@@ -6,21 +6,17 @@
   <title>Iniciar Sesión | MenuSense</title>
   <link rel="stylesheet" href="estilos_login.css" />
 </head>
-
 <body class="login-page">
 
-  <!-- NAV (igual que index) -->
   <header class="header">
     <nav class="nav">
       <div class="logo">
         <span class="logo-icon">🍽️</span>
         <a href="index.html" class="logo-text">MenuSense</a>
       </div>
-
     </nav>
   </header>
 
-  <!-- LOGIN -->
   <main class="login-wrapper fade-in">
     <section class="login-card">
       <h2>Iniciar Sesión</h2>
@@ -37,14 +33,21 @@
       </form>
 
       <div id="message" class="login-message"></div>
-      <div id="welcome" class="login-welcome"></div>
+      <div id="welcome" class="login-welcome" style="display:none;"></div>
 
-      <p class="login-subtitle">¿No tienes cuenta? <a href="registro.html" style="color: aqua;">Regístrate aquí</a></p>
+      <p class="login-subtitle">
+        ¿No tienes cuenta? 
+        <a href="registro.html" style="color: aqua;">Regístrate aquí</a>
+      </p>
     </section>
   </main>
 
   <script>
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    const loginForm = document.getElementById('loginForm');
+    const messageDiv = document.getElementById('message');
+    const welcomeDiv = document.getElementById('welcome');
+
+    loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
 
       const email = document.getElementById('email').value.trim();
@@ -60,24 +63,31 @@
         const data = await res.json();
 
         if (res.ok) {
-          // guardar token en localStorage/sessionStorage para futuras llamadas
+          // Guardar token e info del usuario
           localStorage.setItem('access_token', data.access_token);
           localStorage.setItem('user', JSON.stringify(data.user));
 
-          document.getElementById('loginForm').style.display = 'none';
-          document.getElementById('welcome').style.display = 'block';
-          document.getElementById('welcome').innerText = `Bienvenido ${data.user.email}`;
-          document.getElementById('message').innerText = '';
+          loginForm.style.display = 'none';
+          welcomeDiv.style.display = 'block';
+          welcomeDiv.innerText = `Bienvenido ${data.user.nombre}`;
+          messageDiv.innerText = '';
         } else {
-          document.getElementById('message').style.color = 'red';
-          document.getElementById('message').innerText = data.error?.message || JSON.stringify(data.error);
+          messageDiv.style.color = 'red';
+          messageDiv.innerText = data.error || JSON.stringify(data.error);
         }
       } catch (error) {
-        document.getElementById('message').style.color = 'red';
-        document.getElementById('message').innerText = error.message;
+        messageDiv.style.color = 'red';
+        messageDiv.innerText = error.message;
       }
     });
-  </script>
 
+    // Si el usuario ya está logueado, mostrar bienvenida
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) {
+      loginForm.style.display = 'none';
+      welcomeDiv.style.display = 'block';
+      welcomeDiv.innerText = `Bienvenido ${storedUser.nombre}`;
+    }
+  </script>
 </body>
 </html>
