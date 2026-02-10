@@ -1,95 +1,86 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 300px;
-        }
-        h2 {
-            text-align: center;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-bottom: 5px;
-        }
-        input {
-            margin-bottom: 15px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #message {
-            text-align: center;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro | MenuSense</title>
+  <link rel="stylesheet" href="estilos_registro.css" />
 </head>
-<body>
-    <div class="container">
-        <h2>Registro</h2>
-        <form id="registerForm">
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" required>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" required>
+<body class="login-page">
 
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" required>
+  <!-- NAV (igual que index) -->
+  <header class="header">
+    <nav class="nav">
+      <div class="logo">
+        <span class="logo-icon">🍽️</span>
+        <span class="logo-text">MenuSense</span>
+      </div>
 
-            <button type="submit">Registrarse</button>
-        </form>
-        <div id="message"></div>
-    </div>
+      <ul class="nav-links">
+        <li><a href="index.html#inicio">Inicio</a></li>
+        <li><a href="index.html#servicios">Qué hacemos</a></li>
+        <li><a href="index.html#comparativas">Comparativas</a></li>
+        <li><a href="index.html#privacidad">Privacidad</a></li>
+      </ul>
 
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+      <a class="btn-login" href="index.html">Volver</a>
+    </nav>
+  </header>
 
-            // Store user data in localStorage
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const userExists = users.find(user => user.email === email);
-            if (userExists) {
-                document.getElementById('message').innerText = 'El email ya está registrado.';
-                return;
-            }
-            users.push({ name, email, password });
-            localStorage.setItem('users', JSON.stringify(users));
-            document.getElementById('message').innerText = 'Registro exitoso. Ahora puedes iniciar sesión.';
-        });
-    </script>
+  <!-- REGISTER -->
+  <main class="login-wrapper fade-in">
+    <section class="login-card">
+      <h2>Crear cuenta</h2>
+      <p class="login-subtitle">Regístrate para guardar favoritos y recibir recomendaciones.</p>
+
+      <form id="registerForm" class="login-form">
+
+        <label for="name">Nombre</label>
+        <input type="text" id="name" required placeholder="Tu nombre" />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="ejemplo@email.com" />
+
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" required placeholder="••••••••" />
+
+        <button class="login-btn" type="submit">Registrarse</button>
+      </form>
+
+      <div id="message" class="login-message"></div>
+
+      <p class="login-subtitle">¿Ya tienes cuenta? <a href="login.html" style="color: aqua;">Inicia sesión</a></p>
+
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      const userExists = users.find(user => user.email === email);
+
+      if (userExists) {
+        document.getElementById('message').innerText = 'El email ya está registrado.';
+        return;
+      }
+
+      users.push({ name, email, password });
+      localStorage.setItem('users', JSON.stringify(users));
+
+      document.getElementById('message').style.color = 'rgba(34,197,94,0.95)';
+      document.getElementById('message').innerText = 'Registro exitoso. Ahora puedes iniciar sesión.';
+
+      // opcional: limpiar campos
+      document.getElementById('registerForm').reset();
+    });
+  </script>
+
 </body>
 </html>
