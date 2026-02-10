@@ -48,29 +48,37 @@
   </main>
 
   <script>
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      const name = document.getElementById('name').value.trim();
+      const nombre = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      const userExists = users.find(user => user.email === email);
+      // rol por defecto 'usuario'
+      const rol = 'usuario';
 
-      if (userExists) {
-        document.getElementById('message').innerText = 'El email ya está registrado.';
-        return;
+      try {
+        const res = await fetch('http://localhost:3000/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, email, password, rol })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          document.getElementById('message').style.color = 'rgba(34,197,94,0.95)';
+          document.getElementById('message').innerText = 'Registro exitoso. Ahora puedes iniciar sesión.';
+          document.getElementById('registerForm').reset();
+        } else {
+          document.getElementById('message').style.color = 'red';
+          document.getElementById('message').innerText = data.error?.message || JSON.stringify(data.error);
+        }
+      } catch (error) {
+        document.getElementById('message').style.color = 'red';
+        document.getElementById('message').innerText = error.message;
       }
-
-      users.push({ name, email, password });
-      localStorage.setItem('users', JSON.stringify(users));
-
-      document.getElementById('message').style.color = 'rgba(34,197,94,0.95)';
-      document.getElementById('message').innerText = 'Registro exitoso. Ahora puedes iniciar sesión.';
-
-      // opcional: limpiar campos
-      document.getElementById('registerForm').reset();
     });
   </script>
 
