@@ -222,6 +222,24 @@ body {
   font-size: 14px;
 }
 
+.recargar-btn{
+  display: grid;
+  margin-top: 8px;
+  border: none;
+  cursor: pointer;
+  padding: 9px;
+  width: 50%;
+  margin-left: 90px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 12px;
+  background-color: rgb(69, 163, 163);
+  color: white;
+  box-shadow: 0 10px 25px rgba(124,58,237,0.22);
+  transition: 0.2s;
+}
+
 #captcha-container {
   padding: 12px;
   border-radius: 14px;
@@ -238,7 +256,7 @@ body {
   cursor: pointer;
   padding: 10px 16px;
   border-radius: 999px;
-  font-weight: 700;
+  font-weight: 70;
   font-size: 14px;
   background: linear-gradient(90deg, rgba(56,189,248,0.85), rgba(124,58,237,0.95));
   color: white;

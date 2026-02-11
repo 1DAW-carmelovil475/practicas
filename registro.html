@@ -51,7 +51,7 @@
         <button 
           type="button" 
           onclick="cargarCaptcha()" 
-          style="margin-top:8px; margin-bottom:20px; padding:14px 20px; font-size:16px; border-radius:999px; background: linear-gradient(90deg, rgba(124,58,237,0.95), rgba(56,189,248,0.85)); color:white; font-weight:900; border:none; cursor:pointer; width:100%; transition:0.2s;"
+          class="recargar-btn"
         >
           Recargar captcha
         </button>
@@ -71,7 +71,7 @@
 
     async function cargarCaptcha() {
       try {
-        const res = await fetch('http://localhost:3000/captcha');
+        const res = await fetch('https://practicas-production-3e7f.up.railway.app/captcha');
         const data = await res.json();
         captchaId = data.captchaId;
 
@@ -98,7 +98,7 @@
       const rol = 'usuario'; // rol por defecto
 
       try {
-        const res = await fetch('http://localhost:3000/register', {
+        const res = await fetch('https://practicas-production-3e7f.up.railway.app/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ nombre, email, password, rol, captchaId, captcha })
