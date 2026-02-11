@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -23,31 +23,11 @@
       <p class="login-subtitle">Accede para guardar favoritos y recomendaciones.</p>
 
       <form id="loginForm" class="login-form">
-        
         <label for="email">Email</label>
         <input type="email" id="email" required placeholder="ejemplo@email.com" />
 
         <label for="password">Contraseña</label>
         <input type="password" id="password" required placeholder="••••••••" />
-
-        <!-- CAPTCHA -->
-        <label>Verificación</label>
-        <div id="captcha-container" style="margin-bottom:10px;"></div>
-
-        <input 
-          type="text" 
-          id="captchaInput" 
-          required 
-          placeholder="Escribe el texto de la imagen" 
-        />
-
-        <button 
-          type="button" 
-          onclick="cargarCaptcha()" 
-          style="margin-top:5px; margin-bottom:15px;"
-        >
-          Recargar captcha
-        </button>
 
         <button class="login-btn" type="submit">Iniciar Sesión</button>
       </form>
@@ -67,52 +47,23 @@
     const messageDiv = document.getElementById('message');
     const welcomeDiv = document.getElementById('welcome');
 
-    let captchaId = null;
-
-    // 🔹 Cargar captcha
-    async function cargarCaptcha() {
-      try {
-        const res = await fetch('http://localhost:3000/captcha');
-        const data = await res.json();
-
-        captchaId = data.captchaId;
-
-        // Mostrar el SVG directamente
-        const container = document.getElementById('captcha-container');
-        container.innerHTML = data.image;
-
-      } catch (error) {
-        console.error("Error cargando captcha:", error);
-        messageDiv.style.color = 'red';
-        messageDiv.innerText = "No se pudo cargar el captcha";
-      }
-    }
-
-    // Cargar al iniciar
-    cargarCaptcha();
-
     loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
 
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
-      const captcha = document.getElementById('captchaInput').value.trim();
 
       try {
         const res = await fetch('http://localhost:3000/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            email, 
-            password, 
-            captchaId, 
-            captcha 
-          })
+          body: JSON.stringify({ email, password })
         });
 
         const data = await res.json();
 
         if (res.ok) {
+          // Guardar token e info del usuario
           localStorage.setItem('access_token', data.access_token);
           localStorage.setItem('user', JSON.stringify(data.user));
 
@@ -122,21 +73,15 @@
           messageDiv.innerText = '';
         } else {
           messageDiv.style.color = 'red';
-          messageDiv.innerText = data.error || "Error en login";
-
-          // Recargar captcha si falla
-          cargarCaptcha();
-          document.getElementById('captchaInput').value = '';
+          messageDiv.innerText = data.error || JSON.stringify(data.error);
         }
-
       } catch (error) {
         messageDiv.style.color = 'red';
         messageDiv.innerText = error.message;
-        cargarCaptcha();
       }
     });
 
-    // Si el usuario ya está logueado
+    // Si el usuario ya está logueado, mostrar bienvenida
     const storedUser = JSON.parse(localStorage.getItem('user'));
     if (storedUser) {
       loginForm.style.display = 'none';
