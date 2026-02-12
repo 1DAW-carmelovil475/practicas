@@ -59,6 +59,15 @@
         <button class="login-btn" type="submit">Registrarse</button>
       </form>
 
+      <!-- VERIFICATION FORM -->
+      <form id="verifyForm" class="login-form" style="display: none;">
+        <label for="verificationCode">Código de verificación</label>
+        <input type="text" id="verificationCode" required placeholder="Ingresa el código de 6 dígitos" />
+
+        <button class="login-btn" type="submit">Verificar</button>
+        <button type="button" onclick="cancelVerification()" class="recargar-btn">Cancelar</button>
+      </form>
+
       <div id="message" class="login-message"></div>
 
       <p class="login-subtitle">¿Ya tienes cuenta? <a href="login.html" style="color: aqua;">Inicia sesión</a></p>
@@ -88,6 +97,8 @@
     // Cargar captcha al inicio
     cargarCaptcha();
 
+    let pendingRegistration = null;
+
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -106,12 +117,13 @@
 
         const data = await res.json();
 
-        if (res.ok) {
+        if (res.ok && data.requiresVerification) {
+          // Mostrar formulario de verificación
+          document.getElementById('registerForm').style.display = 'none';
+          document.getElementById('verifyForm').style.display = 'block';
           document.getElementById('message').style.color = 'rgba(34,197,94,0.95)';
-          document.getElementById('message').innerText = 'Registro exitoso. Ahora puedes iniciar sesión.';
-          document.getElementById('registerForm').reset();
-          // Recargar captcha al registrarse
-          cargarCaptcha();
+          document.getElementById('message').innerText = data.message;
+          pendingRegistration = { nombre, email, password, rol };
         } else {
           document.getElementById('message').style.color = 'red';
           document.getElementById('message').innerText = data.error?.message || JSON.stringify(data.error);
@@ -125,6 +137,57 @@
         cargarCaptcha();
       }
     });
+
+    document.getElementById('verifyForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      if (!pendingRegistration) return;
+
+      const code = document.getElementById('verificationCode').value.trim();
+
+      try {
+        const res = await fetch('http://localhost:3000/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: pendingRegistration.email,
+            code,
+            password: pendingRegistration.password,
+            nombre: pendingRegistration.nombre,
+            rol: pendingRegistration.rol
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          document.getElementById('message').style.color = 'rgba(34,197,94,0.95)';
+          document.getElementById('message').innerText = 'Registro exitoso. Ahora puedes iniciar sesión.';
+          document.getElementById('registerForm').reset();
+          document.getElementById('verifyForm').reset();
+          document.getElementById('registerForm').style.display = 'block';
+          document.getElementById('verifyForm').style.display = 'none';
+          pendingRegistration = null;
+          // Recargar captcha
+          cargarCaptcha();
+        } else {
+          document.getElementById('message').style.color = 'red';
+          document.getElementById('message').innerText = data.error;
+        }
+      } catch (error) {
+        document.getElementById('message').style.color = 'red';
+        document.getElementById('message').innerText = error.message;
+      }
+    });
+
+    function cancelVerification() {
+      document.getElementById('registerForm').style.display = 'block';
+      document.getElementById('verifyForm').style.display = 'none';
+      document.getElementById('verifyForm').reset();
+      document.getElementById('message').innerText = '';
+      pendingRegistration = null;
+      cargarCaptcha();
+    }
   </script>
 
 </body>
