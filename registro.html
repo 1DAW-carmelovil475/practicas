@@ -180,12 +180,8 @@
     });
 
     function cancelVerification() {
-      document.getElementById('registerForm').style.display = 'block';
-      document.getElementById('verifyForm').style.display = 'none';
-      document.getElementById('verifyForm').reset();
-      document.getElementById('message').innerText = '';
+      window.location.href = 'index.html';
       pendingRegistration = null;
-      cargarCaptcha();
     }
   </script>
 

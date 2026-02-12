@@ -126,7 +126,7 @@ body {
 .btn-login{
   text-decoration: none;
   padding: 0.6rem 1.5rem;
-  border-radius: 6px;
+  border-radius: 20px;
   background: var(--primary);
   color: white;
   font-weight: 600;
@@ -146,14 +146,14 @@ body {
 ----------------------------- */
 
 .hero{
-  height: 75vh;
+  height: 93vh;
   min-height: 550px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background-image: url("imagen/img_arriba.jpg");
+  background-image: url("img/img_arriba.jpg");
   background-size: cover;
   background-position: center;
 }
@@ -200,7 +200,7 @@ body {
 .btn-primary, .btn-secondary{
   text-decoration: none;
   padding: 0.875rem 2rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.2s ease;
@@ -219,7 +219,7 @@ body {
 }
 
 .btn-secondary{
-  background: transparent;
+  background-color: rgb(129, 129, 129);
   border: 2px solid var(--border);
   color: var(--text);
 }
