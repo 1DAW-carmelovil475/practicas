@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard | MenuSense</title>
   <link rel="stylesheet" href="estilos_bienvenida.css" />
+  <!-- Leaflet CSS -->
+  <link 
+    rel="stylesheet" 
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
 </head>
 <body class="dashboard-page">
 
@@ -175,16 +182,7 @@
     <!-- BUSCAR RESTAURANTES (MAP VIEW) -->
     <section id="buscar" class="content-section map-view active">
       <div class="map-container">
-        <div id="map" class="map-placeholder">
-          <div class="map-overlay">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            <h3>Google Maps</h3>
-            <p>Aquí se integrará la API de Google Maps</p>
-          </div>
-        </div>
+        <div id="map"></div>
       </div>
     </section>
 
@@ -367,81 +365,14 @@
 
   </main>
 
-  <script>
-    function capitalizarNombre(nombre) {
-      if (!nombre) return '';
-      return nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
-    }
-
-    const user = JSON.parse(localStorage.getItem('user'));
-    const token = localStorage.getItem('access_token');
-
-    if (!user || !token) {
-      window.location.href = 'login.html';
-    }
-
-    const nombreCapitalizado = capitalizarNombre(user.nombre);
-    document.getElementById('headerUserName').textContent = nombreCapitalizado;
-    document.getElementById('userAvatar').textContent = nombreCapitalizado.charAt(0).toUpperCase();
-    document.getElementById('profileName').textContent = nombreCapitalizado;
-    document.getElementById('profileEmail').textContent = user.email;
-    document.getElementById('profileRole').textContent = user.rol;
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('user');
-      localStorage.removeItem('access_token');
-      window.location.href = 'index.html';
-    });
-
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.content-section');
-    const sidebar = document.getElementById('sidebar');
-
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        navLinks.forEach(nav => nav.classList.remove('active'));
-        sections.forEach(section => section.classList.remove('active'));
-        
-        link.classList.add('active');
-        const sectionId = link.getAttribute('data-section');
-        const activeSection = document.getElementById(sectionId);
-        activeSection.classList.add('active');
-
-        if (sectionId === 'buscar') {
-          sidebar.classList.add('visible');
-        } else {
-          sidebar.classList.remove('visible');
-        }
-      });
-    });
-
-    document.getElementById('savePreferences').addEventListener('click', () => {
-      alert('Preferencias guardadas correctamente');
-    });
-
-    document.querySelector('.btn-search').addEventListener('click', () => {
-      const query = document.getElementById('searchInput').value;
-      const restaurantList = document.querySelector('.restaurant-list');
-      
-      if (query.trim()) {
-        restaurantList.innerHTML = `
-          <div class="restaurant-item">
-            <div class="restaurant-item-icon">🍕</div>
-            <div class="restaurant-item-info">
-              <h4>Resultados para "${query}"</h4>
-              <p>La búsqueda estará disponible próximamente</p>
-            </div>
-          </div>
-        `;
-      }
-    });
-
-    document.getElementById('btnCompare').addEventListener('click', () => {
-      // Simular clic en el enlace de comparativas
-      document.querySelector('.nav-link[data-section="comparativas"]').click();
-    });
+  <!-- Leaflet JS -->
+  <script 
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin="">
   </script>
+
+
+<script src="../backendPracticas/bienvenida.js"></script>
 </body>
 </html>
